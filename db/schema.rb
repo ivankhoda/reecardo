@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_13_210944) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_14_105620) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,6 +24,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_13_210944) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.bigint "vendor_id", null: false
+    t.bigint "codetype_id", null: false
+    t.index ["codetype_id"], name: "index_cards_on_codetype_id"
     t.index ["user_id"], name: "index_cards_on_user_id"
     t.index ["vendor_id"], name: "index_cards_on_vendor_id"
   end
@@ -43,13 +45,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_13_210944) do
 
   create_table "vendors", force: :cascade do |t|
     t.string "name", null: false
-    t.string "codetype"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "alias", null: false
     t.bigint "codetype_id", null: false
     t.index ["codetype_id"], name: "index_vendors_on_codetype_id"
   end
 
+  add_foreign_key "cards", "codetypes"
   add_foreign_key "cards", "users"
   add_foreign_key "cards", "vendors"
   add_foreign_key "vendors", "codetypes"

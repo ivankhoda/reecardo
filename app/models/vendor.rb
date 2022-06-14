@@ -1,4 +1,7 @@
 class Vendor < ApplicationRecord
   has_many :cards
-  has_many :codetypes
+
+  def supported?(name)
+    p find_by_name(name:)
+  end
 end
