@@ -29,7 +29,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def start!(_word = nil, *_other_words)
-    reply_with :message, text: 'Welcome to Expenses bot, please select item...', reply_markup: {
+    reply_with :message, text: 'Welcome to bot, please select item...', reply_markup: {
       inline_keyboard: [
         [
           { text: 'Add new card', callback_data: 'add_new_card' },
@@ -39,25 +39,20 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     }
   end
 
-  def new_card(info)
-    @vendor = Vendor.find_by_name(info.downcase)
-    name = @vendor.name.capitalize
+  def new_card(*info)
+    @vendor = Vendor.find_by_name(info[0].downcase)
+    name = @vendor.name
     ref = @vendor.alias
     codetype_id = @vendor.codetype_id
     vendor_id = @vendor.id
     user_id = User.find_by_username(username).id
     codetype_id = @vendor.codetype_id
-
-    card = Card.new({ name:, vendor: @vendor.name, alias: ref,
-                      user_id:, codetype_id: })
+    code = info[1]
+    card = Card.create({ name:, vendor: name, alias: ref, code:,
+                         user_id:, codetype_id:, vendor_id: })
     p card
-    # save_context :new_card_number
-    # respond_with :message, text: "Введите номер вашей карты #{@vendor.name.capitalize}"
-  end
-
-  def new_card_number(num)
-    # p User.find_by_username(username).cards
-    p num, 'number'
+    save_context :new_card_number
+    respond_with :message, text: "Все хорошо, у вас есть карта #{@vendor.name.capitalize}"
   end
 
   def callback_query(data)
