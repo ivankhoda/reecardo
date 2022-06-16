@@ -8,15 +8,21 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def message(message)
     upd = HashWithIndifferentAccess.new(message)
     if !User.find_by_username(username).nil?
-      reply_with :message, text: 'Welcome to cardholder, what you like to do?', reply_markup: {
-        inline_keyboard: [
-          [
-            { text: 'Add new card', callback_data: 'add_new_card' },
-            { text: 'Show my cards', callback_data: 'show_user_cards' },
-            { text: 'Find card', callback_data: 'find_user_card' }
-          ]
-        ]
-      }
+
+      card = User.find_by_username(username).cards.find_by_vendor(text)
+      p card.code.to_i
+      barcode = card.generate_barcode128(card.code)
+      # reply_with :message, text: 'Привет'
+      # reply_markup: {
+      #   inline_keyboard: [
+      #     [
+      #       { text: 'Add new card', callback_data: 'add_new_card' },
+      #       { text: 'Show my cards', callback_data: 'show_user_cards' },
+      #       { text: 'Find card', callback_data: 'find_user_card' }
+      #     ]
+      #   ]
+      # }
+      respond_with :photo, photo: barcode
     else
       respond_with :message, text: 'Try to reg first', reply_markup: {
         inline_keyboard: [
@@ -50,8 +56,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     code = info[1]
     card = Card.create({ name:, vendor: name, alias: ref, code:,
                          user_id:, codetype_id:, vendor_id: })
-    p card
-    save_context :new_card_number
+
     respond_with :message, text: "Все хорошо, у вас есть карта #{@vendor.name.capitalize}"
   end
 
@@ -64,6 +69,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def username
     upd = HashWithIndifferentAccess.new(update)
     upd[:message][:from][:username]
+  end
+
+  def text
+    upd = HashWithIndifferentAccess.new(update)
+    upd[:message][:text]
   end
 
   def session_key
