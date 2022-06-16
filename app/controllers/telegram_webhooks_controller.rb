@@ -5,26 +5,25 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   # Every update has one of: message, inline_query, chosen_inline_result,
   # callback_query, etc.
   # Define method with the same name to handle this type of update.
-  def message(message)
-    upd = HashWithIndifferentAccess.new(message)
+  def message(_message)
     if !User.find_by_username(username).nil?
+      card = User.find_by_username(username).cards.find_by_vendor(text.downcase)
+      if card
+        barcode = Card.barcode(card.codetype_id, card.code)
+        respond_with :photo, photo: barcode
+      else
+        respond_with :message, text: 'Карточка с таким названием не найдена, хотите завести?', reply_markup: {
+          inline_keyboard: [
+            [
+              { text: 'Добавить новую карту', callback_data: 'add_new_card' }
+            ]
+          ]
+        }
 
-      card = User.find_by_username(username).cards.find_by_vendor(text)
-      p card.code.to_i
-      barcode = card.generate_barcode128(card.code)
-      # reply_with :message, text: 'Привет'
-      # reply_markup: {
-      #   inline_keyboard: [
-      #     [
-      #       { text: 'Add new card', callback_data: 'add_new_card' },
-      #       { text: 'Show my cards', callback_data: 'show_user_cards' },
-      #       { text: 'Find card', callback_data: 'find_user_card' }
-      #     ]
-      #   ]
-      # }
-      respond_with :photo, photo: barcode
+      end
+
     else
-      respond_with :message, text: 'Try to reg first', reply_markup: {
+      respond_with :message, text: 'Вы не зарегистрированы, сперва нужно зарегистрироваться', reply_markup: {
         inline_keyboard: [
           [
             { text: 'Registration', callback_data: 'registration' }
@@ -38,14 +37,15 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     reply_with :message, text: 'Welcome to bot, please select item...', reply_markup: {
       inline_keyboard: [
         [
-          { text: 'Add new card', callback_data: 'add_new_card' },
-          { text: 'Show my cards', callback_data: 'show_user_cards' }
+          { text: 'Добавить карточку', callback_data: 'add_new_card' },
+          { text: 'Показать все мои карточки', callback_data: 'show_user_cards' }
         ]
       ]
     }
   end
 
   def new_card(*info)
+    # info = Struct.new(:vendor, :code)
     @vendor = Vendor.find_by_name(info[0].downcase)
     name = @vendor.name
     ref = @vendor.alias
