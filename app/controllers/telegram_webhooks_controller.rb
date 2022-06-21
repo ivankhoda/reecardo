@@ -10,8 +10,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       card = User.find_by_username(username).cards.find_by_vendor(text.downcase)
       if card
         barcode = Card.barcode(card.codetype_id, card.code)
-        bc = Card.code(Codetype.print_code(card.codetype_id, card.code))
-        respond_with :photo, photo: bc
+        respond_with :photo, photo: barcode
+        # respond_with :message, text: 'barcode'
       else
         respond_with :message, text: 'Карточка с таким названием не найдена, хотите завести?', reply_markup: {
           inline_keyboard: [

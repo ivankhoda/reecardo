@@ -59,6 +59,7 @@ gem 'redis-rails'
 
 gem 'barby'
 gem 'chunky_png'
+gem 'pdf-417'
 
 #serializer
 gem 'jsonapi-serializer'
