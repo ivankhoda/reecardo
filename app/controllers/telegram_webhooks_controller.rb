@@ -10,7 +10,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       card = User.find_by_username(username).cards.find_by_vendor(text.downcase)
       if card
         barcode = Card.barcode(card.codetype_id, card.code)
-        respond_with :photo, photo: barcode
+        reply_with :photo, photo: barcode
         # respond_with :message, text: 'barcode'
       else
         respond_with :message, text: 'Карточка с таким названием не найдена, хотите завести?', reply_markup: {
@@ -57,8 +57,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     code = info[1]
     card = Card.create({ name:, vendor: name, alias: ref, code:,
                          user_id:, codetype_id:, vendor_id: })
-
-    respond_with :message, text: "Все хорошо, у вас есть карта #{@vendor.name.capitalize}"
+    if card.id
+      respond_with :message, text: "Все хорошо, у вас есть карта #{@vendor.name.capitalize}"
+    else
+      respond_with :message, text: ' Что-то пошло не так'
+    end
   end
 
   def callback_query(data)
