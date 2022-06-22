@@ -57,6 +57,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     end
     data = message.new(info[0].downcase, info[1])
     p data.vendor_exists?
+    p data.valid?
 
     # @vendor = Vendor.find_by_name(info[0].downcase)
     # name = @vendor.name
