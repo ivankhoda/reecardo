@@ -56,25 +56,23 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       end
     end
     data = message.new(info[0].downcase, info[1])
-    p data.vendor_exists?
-    p data.valid?
 
-    # @vendor = Vendor.find_by_name(info[0].downcase)
-    # name = @vendor.name
-    # ref = @vendor.alias
-    # codetype_id = @vendor.codetype_id
-    # vendor_id = @vendor.id
-    # user_id = User.find_by_username(username).id
-    # codetype_id = @vendor.codetype_id
-    # code = info[1]
-    # card = Card.create({ name:, vendor: name, alias: ref, code:,
-    #                      user_id:, codetype_id:, vendor_id: })
-    # if card.id
-    #   respond_with :message, text: "Все хорошо, у вас есть карта #{@vendor.name.capitalize}"
-    # else
-    #   respond_with :message, text: ' Что-то пошло не так'
-    # end
-    respond_with :message, text: ' Что-то пошло не так'
+    @vendor = Vendor.find_by_name(data.vendor.downcase)
+    name = @vendor.name
+    ref = @vendor.alias
+    codetype_id = @vendor.codetype_id
+    vendor_id = @vendor.id
+    user_id = User.find_by_username(username).id
+    codetype_id = @vendor.codetype_id
+    code = data.code
+    card = Card.create({ name:, vendor: name, alias: ref, code:,
+                         user_id:, codetype_id:, vendor_id: })
+    if card.id
+      respond_with :message, text: "Все хорошо, у вас есть карта #{@vendor.name.capitalize}"
+    else
+      respond_with :message, text: ' Что-то пошло не так'
+    end
+    # respond_with :message, text: ' Что-то пошло не так'
   end
 
   def callback_query(data)
