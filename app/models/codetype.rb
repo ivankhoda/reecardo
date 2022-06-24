@@ -28,7 +28,6 @@ class Codetype < ApplicationRecord
 
   def self.generate_pdf417(value)
     require 'pdf-417'
-
     PDF417.to_png('tmp/barcode.png', value, { x_scale: 4, y_scale: 2 })
     File.open('tmp/barcode.png')
   end

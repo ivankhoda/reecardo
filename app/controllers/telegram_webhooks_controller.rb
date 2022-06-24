@@ -11,7 +11,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       if card
         barcode = Card.barcode(card.codetype_id, card.code)
         reply_with :photo, photo: barcode
-        # respond_with :message, text: 'barcode'
+
       else
         respond_with :message, text: 'Карточка с таким названием не найдена, хотите завести?', reply_markup: {
           inline_keyboard: [
@@ -27,7 +27,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       respond_with :message, text: 'Вы не зарегистрированы, сперва нужно зарегистрироваться', reply_markup: {
         inline_keyboard: [
           [
-            { text: 'Registration', callback_data: 'registration' }
+            { text: 'Регистрация', callback_data: 'registration' }
           ]
         ]
       }
@@ -56,39 +56,37 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       end
     end
     data = message.new(info[0].downcase, info[1])
+    return unless data.valid?
+    return unless data.vendor_exists?
 
     @vendor = Vendor.find_by_name(data.vendor.downcase)
-    name = @vendor.name
-    ref = @vendor.alias
-    codetype_id = @vendor.codetype_id
-    vendor_id = @vendor.id
+
     user_id = User.find_by_username(username).id
-    codetype_id = @vendor.codetype_id
-    code = data.code
-    card = Card.create({ name:, vendor: name, alias: ref, code:,
-                         user_id:, codetype_id:, vendor_id: })
+
+    card = Card.create({ name: @vendor.name, vendor: name, alias: @vendor.alias, code: data.code,
+                         user_id:, codetype_id: @vendor.codetype_id, vendor_id: @vendor.id })
     if card.id
       respond_with :message, text: "Все хорошо, у вас есть карта #{@vendor.name.capitalize}"
     else
       respond_with :message, text: ' Что-то пошло не так'
     end
-    # respond_with :message, text: ' Что-то пошло не так'
   end
 
   def callback_query(data)
-    upd = HashWithIndifferentAccess.new(update)
     username = upd[:callback_query][:from][:username]
     callback_query_answer_handler(data, username)
   end
 
   def username
-    upd = HashWithIndifferentAccess.new(update)
     upd[:message][:from][:username]
   end
 
   def text
-    upd = HashWithIndifferentAccess.new(update)
     upd[:message][:text]
+  end
+
+  def upd
+    HashWithIndifferentAccess.new(update)
   end
 
   def session_key
