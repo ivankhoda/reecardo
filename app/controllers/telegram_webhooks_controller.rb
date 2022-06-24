@@ -6,8 +6,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   # callback_query, etc.
   # Define method with the same name to handle this type of update.
   def message(_message)
-    if !User.find_by_username(username).nil?
-      card = User.find_by_username(username).cards.find_by_vendor(text.downcase)
+    user = User.find_by_username(username)
+    if !user.nil?
+      card = user.cards.find_by_vendor(text.downcase)
       if card
         barcode = Card.barcode(card.codetype_id, card.code)
         reply_with :photo, photo: barcode
@@ -56,19 +57,18 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       end
     end
     data = message.new(info[0].downcase, info[1])
-    return unless data.valid?
-    return unless data.vendor_exists?
 
-    @vendor = Vendor.find_by_name(data.vendor.downcase)
+    if data.valid? && data.vendor_exists?
+      @vendor = Vendor.find_by_name(data.vendor.downcase)
+      user_id = User.find_by_username(username).id
+      card = Card.create({ name: @vendor.name, vendor: name, alias: @vendor.alias, code: data.code,
+                           user_id:, codetype_id: @vendor.codetype_id, vendor_id: @vendor.id })
 
-    user_id = User.find_by_username(username).id
-
-    card = Card.create({ name: @vendor.name, vendor: name, alias: @vendor.alias, code: data.code,
-                         user_id:, codetype_id: @vendor.codetype_id, vendor_id: @vendor.id })
-    if card.id
       respond_with :message, text: "Все хорошо, у вас есть карта #{@vendor.name.capitalize}"
     else
-      respond_with :message, text: ' Что-то пошло не так'
+      text = 'Введенные вами параметры не подходят, введите название организации и код карточки' unless data.valid?
+      text = 'Пока что этой организации нет в списке доступных' unless data.vendor_exists?
+      respond_with :message, text: text
     end
   end
 
