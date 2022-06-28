@@ -20,3 +20,9 @@ codes = Codetype.create!([
                            { name: 'DataMatrix (Semacode)', alias: 'data_matrix' },
                            { name: 'PDF417', alias: 'pdf_417' }
                          ])
+
+vendors = Codetype.create!([
+                             { name: 'лента', alias: 'lenta', codetype: 13 },
+                             { name: 'дикси', alias: 'dixy', codetype: 6 },
+                             { name: 'спортлайф', alias: 'sl', codetype: 6 }
+                           ])
