@@ -60,7 +60,6 @@ gem 'redis-rails'
 gem 'barby'
 gem 'chunky_png'
 gem 'pdf-417'
-gem 'web-console'
 #serializer
 gem 'jsonapi-serializer'
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
