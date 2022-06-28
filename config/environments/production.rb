@@ -93,7 +93,7 @@ Rails.application.configure do
 
   config.hosts << /[a-z0-9-]+\.ngrok\.io/
   config.telegram_updates_controller.session_store = :redis_store, { expires_in: 1.month }
-
+  routes.default_url_options = { host: ENV['url'], protocol: 'https' }
   Telegram.bots_config = {
     default: ENV['token'],
     chat: {
