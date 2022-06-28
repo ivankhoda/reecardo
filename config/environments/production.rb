@@ -94,7 +94,6 @@ Rails.application.configure do
   config.hosts << /[a-z0-9-]+\.ngrok\.io/
   config.telegram_updates_controller.session_store = :redis_store, { expires_in: 1.month }
 
-  config.web_console.whitelisted_ips = '91.108.6.159'
   Telegram.bots_config = {
     default: ENV['token'],
     chat: {
