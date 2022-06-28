@@ -3,10 +3,10 @@ module CallbackQueryAnswerHelper
     case data
     when 'registration'
       if !User.find_by_username(username).nil?
-        respond_with :message, text: 'You already registered'
+        respond_with :message, text: 'Вы уже зарегистрированы.'
       else
         User.create({ username: })
-        respond_with :message, text: "Congrats, you're in."
+        respond_with :message, text: 'Вы успешно зарегистрированы.'
       end
 
     when 'add_new_card'
