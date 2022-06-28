@@ -21,8 +21,8 @@ codes = Codetype.create!([
                            { name: 'PDF417', alias: 'pdf_417' }
                          ])
 
-vendors = Codetype.create!([
-                             { name: 'лента', alias: 'lenta', codetype: 13 },
-                             { name: 'дикси', alias: 'dixy', codetype: 6 },
-                             { name: 'спортлайф', alias: 'sl', codetype: 6 }
-                           ])
+vendors = Vendor.create!([
+                           { name: 'лента', alias: 'lenta', codetype_id: 13 },
+                           { name: 'дикси', alias: 'dixy', codetype_id: 6 },
+                           { name: 'спортлайф', alias: 'sl', codetype_id: 6 }
+                         ])
