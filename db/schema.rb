@@ -18,7 +18,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_16_063751) do
     t.string "name"
     t.string "vendor", null: false
     t.string "alias"
-    t.string "code", null: false
+    t.string "code"
     t.boolean "favorite"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -45,6 +45,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_16_063751) do
 
   create_table "vendors", force: :cascade do |t|
     t.string "name", null: false
+    t.string "codetype"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "alias", null: false
