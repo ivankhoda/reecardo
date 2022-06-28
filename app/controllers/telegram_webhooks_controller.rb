@@ -50,7 +50,6 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def new_card(*info)
-    p info
     message = Struct.new(:vendor, :code) do
       def valid?
         vendor && code ? true : false
