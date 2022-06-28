@@ -91,7 +91,7 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.hosts << /[a-z0-9-]+\.ngrok\.io/
+  
   config.telegram_updates_controller.session_store = :redis_store, { expires_in: 1.month }
   routes.default_url_options = { host: ENV['url'], protocol: 'https' }
   Telegram.bots_config = {
