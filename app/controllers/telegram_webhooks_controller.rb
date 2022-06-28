@@ -50,6 +50,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def new_card(*info)
+    p info
     message = Struct.new(:vendor, :code) do
       def valid?
         vendor && code ? true : false
@@ -64,9 +65,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     if data.valid? && data.vendor_exists?
       @vendor = Vendor.find_by_name(data.vendor.downcase)
       user_id = User.find_by_username(username).id
-      card = Card.create({ name: @vendor.name, vendor: name, alias: @vendor.alias, code: data.code,
+      card = Card.create({ name: @vendor.name, vendor: @vendor.name, alias: @vendor.alias, code: data.code,
                            user_id:, codetype_id: @vendor.codetype_id, vendor_id: @vendor.id })
-
       respond_with :message, text: "Все хорошо, у вас есть карта #{@vendor.name.capitalize}"
     else
       text = 'Введенные вами параметры не подходят, введите название организации и код карточки' unless data.valid?
