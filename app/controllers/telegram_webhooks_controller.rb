@@ -36,11 +36,14 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def start!(_word = nil, *_other_words)
-    reply_with :message, text: 'Welcome to bot, please select item...', reply_markup: {
+    reply_with :message, text: 'Добро пожаловать в бот.', reply_markup: {
       inline_keyboard: [
         [
-          { text: 'Добавить карточку', callback_data: 'add_new_card' },
-          { text: 'Показать все мои карточки', callback_data: 'show_user_cards' }
+          { text: 'Добавить карточку', callback_data: 'add_new_card' }
+
+        ],
+        [
+          { text: 'Регистрация', callback_data: 'registration' }
         ]
       ]
     }
@@ -68,7 +71,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     else
       text = 'Введенные вами параметры не подходят, введите название организации и код карточки' unless data.valid?
       text = 'Пока что этой организации нет в списке доступных' unless data.vendor_exists?
-      respond_with :message, text: text
+      respond_with :message, text:
     end
   end
 
