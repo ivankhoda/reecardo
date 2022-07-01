@@ -1,6 +1,6 @@
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
-  include CallbackQueryAnswerHelper
   include Telegram::Bot::UpdatesController::MessageContext
+  include CallbackQueryAnswerHelper
   use_session!
   # Every update has one of: message, inline_query, chosen_inline_result,
   # callback_query, etc.
