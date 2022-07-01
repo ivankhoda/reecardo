@@ -1,4 +1,5 @@
 module CallbackQueryAnswerHelper
+  include Telegram::Bot::UpdatesController::MessageContext
   def callback_query_answer_handler(data, username)
     case data
     when 'registration'
