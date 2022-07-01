@@ -59,18 +59,19 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       end
     end
     data = message.new(info[0].downcase, info[1])
-
-    if data.valid? && data.vendor_exists?
-      @vendor = Vendor.find_by_name(data.vendor.downcase)
-      user_id = User.find_by_username(username).id
-      card = Card.create({ name: @vendor.name, vendor: @vendor.name, alias: @vendor.alias, code: data.code,
-                           user_id:, codetype_id: @vendor.codetype_id, vendor_id: @vendor.id })
-      respond_with :message, text: "Все хорошо, у вас есть карта #{@vendor.name.capitalize}"
-    else
-      text = 'Введенные вами параметры не подходят, введите название организации и код карточки' unless data.valid?
-      text = 'Пока что этой организации нет в списке доступных' unless data.vendor_exists?
-      respond_with :message, text:
-    end
+    msg = data.vendor + data.code
+    respond_with :message, text: msg
+    # if data.valid? && data.vendor_exists?
+    #   @vendor = Vendor.find_by_name(data.vendor.downcase)
+    #   user_id = User.find_by_username(username).id
+    #   card = Card.create({ name: @vendor.name, vendor: @vendor.name, alias: @vendor.alias, code: data.code,
+    #                        user_id:, codetype_id: @vendor.codetype_id, vendor_id: @vendor.id })
+    #   respond_with :message, text: "Все хорошо, у вас есть карта #{@vendor.name.capitalize}"
+    # else
+    #   text = 'Введенные вами параметры не подходят, введите название организации и код карточки' unless data.valid?
+    #   text = 'Пока что этой организации нет в списке доступных' unless data.vendor_exists?
+    #   respond_with :message, text:
+    # end
   end
 
   def callback_query(data)
