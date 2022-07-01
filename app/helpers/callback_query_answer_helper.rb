@@ -11,7 +11,7 @@ module CallbackQueryAnswerHelper
 
     when 'add_new_card'
       save_context :new_card
-      reply_with :message, text: 'Пожалуйста, укажите название магазина и код карточки.'
+      respond_with :message, text: 'Пожалуйста, укажите название магазина и код карточки.'
     else
       reply_with :message, text: 'Not found command'
     end
