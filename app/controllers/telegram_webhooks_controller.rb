@@ -49,18 +49,18 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def new_card(*info)
-    data = Struct.new(:vendor, :code) do
-      def valid?
-        vendor && code ? true : false
-      end
+    # data = Struct.new(:vendor, :code) do
+    #   def valid?
+    #     vendor && code ? true : false
+    #   end
 
-      def vendor_exists?
-        !Vendor.find_by_name(vendor).nil?
-      end
-    end
-    str = data.new(info[0].downcase, info[1])
-    text = str.vendor + str.code
-    respond_with :message, text:
+    #   def vendor_exists?
+    #     !Vendor.find_by_name(vendor).nil?
+    #   end
+    # end
+    # str = data.new(info[0].downcase, info[1])
+    # text = str.vendor + str.code
+    respond_with :message, text: info
     # if data.valid? && data.vendor_exists?
     #   @vendor = Vendor.find_by_name(data.vendor.downcase)
     #   user_id = User.find_by_username(username).id
