@@ -14,6 +14,7 @@ module CallbackQueryAnswerHelper
 
     when 'add_new_card'
       save_context :new_card
+
       reply_with :message, text: 'Пожалуйста, укажите название заведения и код карточки.'
 
     else

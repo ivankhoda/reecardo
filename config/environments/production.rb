@@ -81,6 +81,7 @@ Rails.application.configure do
   # Use a different logger for distributed setups.
   # require "syslog/logger"
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new "app-name")
+  config.telegram_updates_controller.session_store = :redis_store, { expires_in: 1.month }
 
   if ENV['RAILS_LOG_TO_STDOUT'].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
@@ -91,7 +92,6 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  
   config.telegram_updates_controller.session_store = :redis_store, { expires_in: 1.month }
   routes.default_url_options = { host: ENV['url'], protocol: 'https' }
   Telegram.bots_config = {
