@@ -1,6 +1,6 @@
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
-  include CallbackQueryAnswerHelper
+  # include CallbackQueryAnswerHelper
   use_session!
   # Every update has one of: message, inline_query, chosen_inline_result,
   # callback_query, etc.
@@ -51,6 +51,10 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     }
   end
 
+  def show_card(s)
+    p s
+  end
+
   def new_card(*info)
     # data = Struct.new(:vendor, :code) do
     #   def valid?
@@ -92,6 +96,29 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def upd
     HashWithIndifferentAccess.new(update)
+  end
+
+  def callback_query_answer_handler(data, username)
+    case data
+    when 'registration'
+      if !User.find_by_username(username).nil?
+        respond_with :message, text: 'Вы уже зарегистрированы.'
+      else
+        User.create({ username: })
+        respond_with :message, text: 'Вы успешно зарегистрированы.'
+      end
+    when 'find_card'
+      # save_context :show_card
+      reply_with :message, text: 'Пожалуйста, укажите название заведения'
+
+    when 'add_new_card'
+      save_context :new_card
+
+      reply_with :message, text: 'Пожалуйста, укажите название заведения и код карточки.'
+
+    else
+      reply_with :message, text: 'Not found command'
+    end
   end
 
   def session_key
