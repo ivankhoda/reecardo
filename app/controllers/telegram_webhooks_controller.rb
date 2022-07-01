@@ -5,10 +5,10 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   # Every update has one of: message, inline_query, chosen_inline_result,
   # callback_query, etc.
   # Define method with the same name to handle this type of update.
-  def message(_message)
+  def show_card(vendor_name)
     user = User.find_by_username(username)
     if !user.nil?
-      card = user.cards.find_by_vendor(text.downcase)
+      card = user.cards.find_by_vendor(vendor_name.downcase)
       if card
         barcode = Card.barcode(card.codetype_id, card.code)
         reply_with :photo, photo: barcode
@@ -43,6 +43,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
         ],
         [
           { text: 'Регистрация', callback_data: 'registration' }
+        ],
+        [
+          { text: 'Найти карточку', callback_data: 'find_card' }
         ]
       ]
     }

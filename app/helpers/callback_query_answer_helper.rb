@@ -8,10 +8,13 @@ module CallbackQueryAnswerHelper
         User.create({ username: })
         respond_with :message, text: 'Вы успешно зарегистрированы.'
       end
+    when 'find_card'
+      save_context :show_card
+      reply_with :message, text: 'Пожалуйста, укажите название заведения'
 
     when 'add_new_card'
       save_context :new_card
-      reply_with :message, text: 'Пожалуйста, укажите название магазина и код карточки.'
+      reply_with :message, text: 'Пожалуйста, укажите название заведения и код карточки.'
 
     else
       reply_with :message, text: 'Not found command'
