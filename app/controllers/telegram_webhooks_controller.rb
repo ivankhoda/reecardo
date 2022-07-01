@@ -1,14 +1,14 @@
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   include CallbackQueryAnswerHelper
-  # use_session!
+  use_session!
   # Every update has one of: message, inline_query, chosen_inline_result,
   # callback_query, etc.
   # Define method with the same name to handle this type of update.
-  def show_card(vendor_name)
+  def message(_d)
     user = User.find_by_username(username)
     if !user.nil?
-      card = user.cards.find_by_vendor(vendor_name.downcase)
+      card = user.cards.find_by_vendor(text.downcase)
       if card
         barcode = Card.barcode(card.codetype_id, card.code)
         reply_with :photo, photo: barcode
